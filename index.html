@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Soborelli - Cardápio de Cuscuz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f4e9;
+        }
+        
+        .flavor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .order-summary {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-order {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-order:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+        
+        /* Novo estilo para o botão "Adicionar mais" */
+        .btn-add-more {
+            background: linear-gradient(135deg, #fbbf24, #fcd34d); /* Um gradiente mais suave */
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-more:hover {
+            transform: scale(1.02); /* Menor escala no hover */
+            box-shadow: 0 3px 10px rgba(251, 191, 36, 0.4); /* Sombra mais suave */
+        }
+
+        .header-bg {
+            /* Imagem de fundo atualizada */
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://media-cdn.tripadvisor.com/media/photo-s/1a/5e/ff/1a/novidade-do-cardapio.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-bg text-white py-16 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl font-bold mb-4">Soborelli</h1>
+            <p class="text-2xl mb-8">O verdadeiro sabor do cuscuz nordestino</p>
+            <div class="flex justify-center">
+                <a href="#menu" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-full transition duration-300">
+                    Ver Cardápio
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-8 px-4 max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Nosso Cardápio</h2>
+            <p class="text-gray-600 text-lg mx-auto">Todos os nossos cuscuzes são servidos com vinagrete e caldo de frango. Escolha seu acompanhamento principal:</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Carne Moída -->
+            <div class="flavor-card bg-white rounded-xl overflow-hidden shadow-lg transition duration-300">
+                <div class="h-48 bg-red-100 flex items-center justify-center">
+                    <!-- Imagem para Carne Moída atualizada -->
+                    <img src="https://bongourmet.com.br/wp-content/uploads/2022/04/Cuscuz-Recheado-Com-Carne.jpg" alt="Cuscuz de Carne Moída" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/192x192/fca5a5/ef4444?text=Cuscuz+Carne';">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Carne Moída</h3>
+                    <p class="text-gray-600 mb-4">Deliciosa carne moída temperada com cebola, pimentão e especiarias.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-amber-600 font-bold text-lg">R$ 8,50</span>
+                        <button onclick="addToOrder('Carne Moída', 8.50)" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frango -->
+            <div class="flavor-card bg-white rounded-xl overflow-hidden shadow-lg transition duration-300">
+                <div class="h-48 bg-yellow-100 flex items-center justify-center">
+                    <!-- Imagem para Frango atualizada -->
+                    <img src="https://i.imgur.com/ktxOqGJ.png" alt="Cuscuz de Frango" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/192x192/fcd34d/d97706?text=Cuscuz+Frango';">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Frango</h3>
+                    <p class="text-gray-600 mb-4">Frango desfiado com cheiro verde e um toque especial de coentro.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-amber-600 font-bold text-lg">R$ 7,00</span>
+                        <button onclick="addToOrder('Frango', 7.00)" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calabresa -->
+            <div class="flavor-card bg-white rounded-xl overflow-hidden shadow-lg transition duration-300">
+                <div class="h-48 bg-orange-100 flex items-center justify-center">
+                    <!-- Imagem para Calabresa atualizada -->
+                    <img src="https://i.imgur.com/YrFtlR9.png" alt="Cuscuz de Calabresa" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/192x192/fed7aa/ea580c?text=Cuscuz+Calabresa';">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Calabresa</h3>
+                    <p class="text-gray-600 mb-4">Calabresa fatiada e grelhada com cebola e pimentão.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-amber-600 font-bold text-lg">R$ 8,50</span>
+                        <button onclick="addToOrder('Calabresa', 8.50)" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Queijo -->
+            <div class="flavor-card bg-white rounded-xl overflow-hidden shadow-lg transition duration-300">
+                <div class="h-48 bg-blue-100 flex items-center justify-center">
+                    <!-- Imagem para Queijo atualizada -->
+                    <img src="https://i.imgur.com/sp0tT6R.png" alt="Cuscuz de Queijo" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/192x192/bfdbfe/2563eb?text=Cuscuz+Queijo';">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Queijo</h3>
+                    <p class="text-gray-600 mb-4">Queijo coalho derretido com um toque de orégano.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-amber-600 font-bold text-lg">R$ 6,00</span>
+                        <button onclick="addToOrder('Queijo', 6.00)" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bacon -->
+            <div class="flavor-card bg-white rounded-xl overflow-hidden shadow-lg transition duration-300">
+                <div class="h-48 bg-red-200 flex items-center justify-center">
+                    <!-- Imagem para Bacon atualizada -->
+                    <img src="https://i.imgur.com/5WyUTJr.png" alt="Cuscuz de Bacon" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/192x192/fecaca/dc2626?text=Cuscuz+Bacon';">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Bacon</h3>
+                    <p class="text-gray-600 mb-4">Bacon crocante para dar um sabor irresistível ao seu cuscuz.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-amber-600 font-bold text-lg">R$ 9,00</span>
+                        <button onclick="addToOrder('Bacon', 9.00)" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personalizado -->
+            <div class="flavor-card bg-white rounded-xl overflow-hidden shadow-lg transition duration-300 border-2 border-amber-500">
+                <div class="h-48 bg-gradient-to-r from-amber-100 to-yellow-100 flex items-center justify-center">
+                    <!-- Imagem para Cuscuz Personalizado atualizada -->
+                    <img src="https://i.imgur.com/yO8ndEc.png" alt="Cuscuz Mexido do Seu Jeito" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/192x192/fffbeb/f59e0b?text=Cuscuz+Personalizado';">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Cuscuz Mexido do Seu Jeito</h3>
+                    <p class="text-gray-600 mb-4">Combine até 3 sabores e crie seu cuscuz perfeito.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-amber-600 font-bold text-lg">A partir de R$ 4,00</span>
+                        <button onclick="openCustomModal()" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300">
+                            Personalizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Summary Sidebar -->
+    <div id="orderSidebar" class="fixed top-0 right-0 h-full w-full bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Seu Pedido</h3>
+                <button onclick="closeOrderSidebar()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="orderItems" class="mb-6">
+                <!-- Order items will be added here dynamically -->
+                <p class="text-gray-500 text-center py-8" id="emptyOrderMessage">Seu pedido está vazio</p>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-4 mb-6">
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Subtotal:</span>
+                    <span id="subtotal" class="font-bold">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Taxa de entrega:</span>
+                    <span id="deliveryFee" class="font-bold">R$ 5,00</span>
+                </div>
+                <div class="flex justify-between text-lg font-bold">
+                    <span>Total:</span>
+                    <span id="total">R$ 5,00</span>
+                </div>
+            </div>
+            
+            <!-- Botão "Adicionar mais" agora acima do "Finalizar Pedido" e com estilo próprio -->
+            <button onclick="backToMenu()" class="btn-add-more w-full py-3 text-white font-bold rounded-full mb-4">
+                Adicionar mais
+            </button>
+
+            <button onclick="checkout()" class="btn-order w-full py-3 text-white font-bold rounded-full mb-4">
+                Finalizar Pedido
+            </button>
+            
+            <!-- Botão "Limpar Pedido" com estilo similar ao antigo "Adicionar mais" -->
+            <button onclick="clearOrder()" class="w-full py-2 bg-gray-200 text-gray-700 font-medium rounded-full hover:bg-gray-300 transition duration-300">
+                Limpar Pedido
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom Order Modal -->
+    <div id="customModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">Cuscuz Mexido do Seu Jeito</h3>
+                    <button onclick="closeCustomModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <p class="text-gray-600 mb-4">Escolha até 3 recheios, o cuscuz simples apenas com legumes custa R$ 4,00:</p>
+                
+                <div class="space-y-3 mb-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="customOvo" class="mr-2" value="Ovo Frito">
+                        <label for="customOvo">Ovo Frito (+R$ 2,00)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="customQueijo" class="mr-2" value="Queijo">
+                        <label for="customQueijo">Queijo (+R$ 3,00)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="customFrango" class="mr-2" value="Frango">
+                        <label for="customFrango">Frango (+R$ 3,00)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="customCarne" class="mr-2" value="Carne Moída">
+                        <label for="customCarne">Carne Moída (+R$ 4,00)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="customCalabresa" class="mr-2" value="Calabresa">
+                        <label for="customCalabresa">Calabresa (+R$ 4,00)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="customBacon" class="mr-2" value="Bacon">
+                        <label for="customBacon">Bacon (+R$ 5,00)</label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-gray-800 font-bold">Total:</span>
+                    <span id="customOrderTotal" class="text-amber-600 font-bold text-lg">R$ 4,00</span>
+                </div>
+                
+                <button onclick="addCustomToOrder()" class="btn-order w-full py-3 text-white font-bold rounded-full">
+                    Adicionar ao Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Order Button -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <button onclick="toggleOrderSidebar()" class="bg-amber-500 hover:bg-amber-600 text-white rounded-full p-5 shadow-lg relative transition duration-300 transform hover:scale-110">
+            <i class="fas fa-shopping-cart text-2xl"></i>
+            <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-sm font-bold rounded-full h-7 w-7 flex items-center justify-center hidden">0</span>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 gap-8">
+                <div class="text-center md:text-left">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Soborelli</h3>
+                    <p class="text-gray-400">O verdadeiro sabor do cuscuz nordestino, feito com ingredientes selecionados e muito amor.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Horário de Funcionamento</h3>
+                    <p class="text-gray-400">Segunda a Sábado: 08:00 - 22:00</p>
+                    <p class="text-gray-400">Domingo: 09:00 - 18:00</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contato</h3>
+                    <p class="text-gray-400"><i class="fas fa-phone mr-2"></i> (85) 98765-4321</p>
+                    <p class="text-gray-400"><i class="fas fa-envelope mr-2"></i> contato@soborelli.com</p>
+                    <div class="flex space-x-4 mt-2">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-whatsapp text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 Soborelli. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dados do pedido
+        let order = [];
+        // Preço base do cuscuz simples com legumes
+        let customOrderBasePrice = 4.00; 
+        
+        // Elementos DOM
+        const orderSidebar = document.getElementById('orderSidebar');
+        const customModal = document.getElementById('customModal');
+        const cartCount = document.getElementById('cartCount');
+        const emptyOrderMessage = document.getElementById('emptyOrderMessage');
+        
+        // Alternar barra lateral do pedido
+        function toggleOrderSidebar() {
+            orderSidebar.classList.toggle('translate-x-full');
+            orderSidebar.classList.toggle('translate-x-0');
+        }
+        
+        function closeOrderSidebar() {
+            orderSidebar.classList.add('translate-x-full');
+            orderSidebar.classList.remove('translate-x-0');
+        }
+        
+        // Abrir modal de pedido personalizado
+        function openCustomModal() {
+            customModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            // Atualizar o total inicial do modal para o novo preço base
+            document.getElementById('customOrderTotal').textContent = 'R$ ' + customOrderBasePrice.toFixed(2).replace('.', ',');
+        }
+        
+        function closeCustomModal() {
+            customModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            
+            // Redefinir checkboxes
+            document.querySelectorAll('#customModal input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Redefinir total para o preço base
+            document.getElementById('customOrderTotal').textContent = 'R$ ' + customOrderBasePrice.toFixed(2).replace('.', ',');
+        }
+        
+        // Adicionar item padrão ao pedido
+        function addToOrder(name, price) {
+            order.push({
+                name: name,
+                price: price,
+                type: 'standard'
+            });
+            
+            updateOrderDisplay();
+            updateCartCount();
+            toggleOrderSidebar();
+        }
+        
+        // Adicionar item personalizado ao pedido
+        function addCustomToOrder() {
+            const checkboxes = document.querySelectorAll('#customModal input[type="checkbox"]:checked');
+            
+            if (checkboxes.length > 3) {
+                // Substituído alert() por uma mensagem na console para evitar bloqueio da UI
+                console.error('Você pode selecionar no máximo 3 acompanhamentos.');
+                return;
+            }
+            
+            let toppings = [];
+            let additionalPrice = 0;
+            
+            checkboxes.forEach(checkbox => {
+                toppings.push(checkbox.value);
+                
+                // Calcular preço adicional com base no acompanhamento
+                switch(checkbox.value) {
+                    case 'Ovo Frito':
+                        additionalPrice += 2.00;
+                        break;
+                    case 'Queijo':
+                        additionalPrice += 3.00;
+                        break;
+                    case 'Frango':
+                        additionalPrice += 3.00;
+                        break;
+                    case 'Carne Moída':
+                        additionalPrice += 4.00;
+                        break;
+                    case 'Calabresa':
+                        additionalPrice += 4.00;
+                        break;
+                    case 'Bacon':
+                        additionalPrice += 5.00;
+                        break;
+                }
+            });
+            
+            const totalPrice = customOrderBasePrice + additionalPrice;
+            
+            let customCuscuzName = 'Cuscuz Mexido do Seu Jeito';
+            if (toppings.length > 0) {
+                customCuscuzName += ' (' + toppings.join(', ') + ')';
+            } else {
+                customCuscuzName += ' (Simples com legumes)';
+            }
+
+            order.push({
+                name: customCuscuzName,
+                price: totalPrice,
+                type: 'custom'
+            });
+            
+            updateOrderDisplay();
+            updateCartCount();
+            closeCustomModal();
+            toggleOrderSidebar();
+        }
+        
+        // Atualizar total do pedido personalizado quando os checkboxes mudam
+        document.querySelectorAll('#customModal input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                let total = customOrderBasePrice;
+                let checkedCount = 0;
+                
+                document.querySelectorAll('#customModal input[type="checkbox"]:checked').forEach(checkedBox => {
+                    checkedCount++;
+                    
+                    // Calcular preço adicional com base no acompanhamento
+                    switch(checkedBox.value) {
+                        case 'Ovo Frito':
+                            total += 2.00;
+                            break;
+                        case 'Queijo':
+                            total += 3.00;
+                            break;
+                        case 'Frango':
+                            total += 3.00;
+                            break;
+                        case 'Carne Moída':
+                            total += 4.00;
+                            break;
+                        case 'Calabresa':
+                            total += 4.00;
+                            break;
+                        case 'Bacon':
+                            total += 5.00;
+                            break;
+                    }
+                });
+                
+                if (checkedCount > 3) {
+                    // Substituído alert() por uma mensagem na console para evitar bloqueio da UI
+                    console.error('Você pode selecionar no máximo 3 acompanhamentos.');
+                    this.checked = false;
+                    // Recalcular total após desmarcar o checkbox
+                    let recalculatedTotal = customOrderBasePrice;
+                    document.querySelectorAll('#customModal input[type="checkbox"]:checked').forEach(checkedBox => {
+                        switch(checkedBox.value) {
+                            case 'Ovo Frito':
+                                recalculatedTotal += 2.00;
+                                break;
+                            case 'Queijo':
+                                recalculatedTotal += 3.00;
+                                break;
+                            case 'Frango':
+                                recalculatedTotal += 3.00;
+                                break;
+                            case 'Carne Moída':
+                                recalculatedTotal += 4.00;
+                                break;
+                            case 'Calabresa':
+                                recalculatedTotal += 4.00;
+                                break;
+                            case 'Bacon':
+                                recalculatedTotal += 5.00;
+                                break;
+                        }
+                    });
+                    document.getElementById('customOrderTotal').textContent = 'R$ ' + recalculatedTotal.toFixed(2).replace('.', ',');
+                    return;
+                }
+                
+                document.getElementById('customOrderTotal').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+            });
+        });
+        
+        // Atualizar exibição do pedido
+        function updateOrderDisplay() {
+            const orderItemsContainer = document.getElementById('orderItems');
+            
+            if (order.length === 0) {
+                emptyOrderMessage.classList.remove('hidden');
+                orderItemsContainer.innerHTML = '';
+                orderItemsContainer.appendChild(emptyOrderMessage);
+            } else {
+                emptyOrderMessage.classList.add('hidden');
+                
+                let itemsHTML = '';
+                let subtotal = 0;
+                
+                order.forEach((item, index) => {
+                    subtotal += item.price;
+                    
+                    itemsHTML += `
+                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                            <div class="flex-1">
+                                <p class="font-medium">${item.name}</p>
+                                <p class="text-sm text-gray-500">Vinagrete + Caldo de frango</p>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="font-bold mr-4">R$ ${item.price.toFixed(2).replace('.', ',')}</span>
+                                <button onclick="removeItem(${index})" class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                orderItemsContainer.innerHTML = itemsHTML;
+                
+                // Atualizar totais
+                const deliveryFee = 5.00;
+                const total = subtotal + deliveryFee;
+                
+                document.getElementById('subtotal').textContent = 'R$ ' + subtotal.toFixed(2).replace('.', ',');
+                document.getElementById('total').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+            }
+        }
+        
+        // Remover item do pedido
+        function removeItem(index) {
+            order.splice(index, 1);
+            updateOrderDisplay();
+            updateCartCount();
+        }
+        
+        // Limpar todo o pedido
+        function clearOrder() {
+            order = [];
+            updateOrderDisplay();
+            updateCartCount();
+        }
+        
+        // Atualizar contagem do carrinho
+        function updateCartCount() {
+            if (order.length > 0) {
+                cartCount.textContent = order.length;
+                cartCount.classList.remove('hidden');
+            } else {
+                cartCount.classList.add('hidden');
+            }
+        }
+        
+        // Função de finalização do pedido
+        function checkout() {
+            if (order.length === 0) {
+                // Substituído alert() por uma mensagem na console para evitar bloqueio da UI
+                console.error('Seu pedido está vazio. Adicione itens antes de finalizar.');
+                return;
+            }
+            
+            // Em um aplicativo real, isso enviaria o pedido para um servidor
+            // Substituído alert() por uma mensagem na console para evitar bloqueio da UI
+            console.log('Pedido finalizado com sucesso! Em breve entraremos em contato para confirmar.');
+            order = [];
+            updateOrderDisplay();
+            updateCartCount();
+            closeOrderSidebar();
+        }
+
+        // Função para voltar ao menu
+        function backToMenu() {
+            closeOrderSidebar(); // Fecha a barra lateral do pedido
+            // Rola suavemente para a seção do menu
+            document.getElementById('menu').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
