@@ -421,7 +421,7 @@
                 <button onclick="novaConsulta()">NOVA CONSULTA</button>
             </div>
 
-            <!-- Div para exibir resultados da consulta -->
+            <!-- Div para exibir resultados da consulta (re-adicionada para os links de download) -->
             <div id="resultadoConsulta" style="display: none; margin-top: 20px;">
                 <h4 style="color: var(--primary-blue);">Resultados da Consulta:</h4>
                 <div class="form-buttons" style="margin-top: 15px;">
@@ -480,11 +480,9 @@
 
     let currentMsgQueCallback = null;
     let currentXmlContent = ''; // Variável para armazenar o conteúdo XML
-    let currentPdfLink = ''; // Variável para armazenar o link do PDF
 
-    // URL base do seu servidor proxy. Apenas usado para a função gerarDanfe()
-    // pois a interação principal de coleta de dados é via extensão.
-    const PROXY_BASE_URL = 'https://nefinfo.onrender.com'; // Exemplo de URL de proxy. Substitua pela sua!
+    // URL base do seu servidor proxy
+    const PROXY_BASE_URL = 'https://nefinfo.onrender.com'; // Certifique-se de que esta URL está correta
 
     if (customModalCloseBtn) {
         customModalCloseBtn.addEventListener('click', () => {
@@ -578,7 +576,7 @@
         MsgB('Abrindo janela da SEFAZ via extensão...');
 
         try {
-            // Preenche os campos ocultos que a extensão espera para iniciar a consulta
+            // Preenche os campos ocultos que a extensão espera
             ele('stringsFSistChave').value = chave;
             
             let sefazUrl = '';
@@ -596,7 +594,7 @@
             ele('stringsFSistClick').click();
 
             // A extensão agora lidará com a abertura da janela e o reCAPTCHA.
-            // A resposta (link PDF/XML) virá via o window.addEventListener('message') abaixo.
+            // A resposta (link PDF/XML) virá via eventos de click nos campos ocultos.
 
         } catch (error) {
             MsgF();
@@ -606,26 +604,28 @@
     }
 
     function visualizarNota() {
-        if (currentPdfLink) {
-            window.open(currentPdfLink, '_blank');
+        if (window.fsistResult && window.fsistResult.linkPDF) {
+            window.open(window.fsistResult.linkPDF, '_blank');
         } else {
             MsgInf('Nenhum link de PDF disponível para visualização.');
         }
     }
 
     function downloadXml() {
-        if (currentXmlContent) {
-            const blob = new Blob([currentXmlContent], { type: 'application/xml' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `NFe_${ele('chave').value}.xml`; // Nome do arquivo
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url); // Libera o URL do objeto
+        if (window.fsistResult && window.fsistResult.linkXML) {
+            // Se o linkXML for um data URL (base64), cria um link para download
+            if (window.fsistResult.linkXML.startsWith('data:')) {
+                const a = document.createElement('a');
+                a.href = window.fsistResult.linkXML;
+                a.download = 'nota_fiscal.xml'; // Nome do arquivo para download
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                window.open(window.fsistResult.linkXML, '_blank');
+            }
         } else {
-            MsgInf('Nenhum conteúdo XML disponível para download.');
+            MsgInf('Nenhum link de XML disponível para download.');
         }
     }
 
@@ -722,13 +722,13 @@
         ele('chave').value = '';
         ele('tipoDocumento').value = 'NFe';
         ele('resultadoConsulta').style.display = 'none'; // Esconde os resultados
+        window.fsistResult = null;
         currentXmlContent = ''; // Limpa o XML armazenado
-        currentPdfLink = ''; // Limpa o link do PDF
         ele('chave').focus();
         MsgInf('Pronto para uma nova consulta!');
     }
 
-    // --- Listener para mensagens da extensão (AGORA ATIVO PARA RECEBER DADOS) ---
+    // --- NOVO: Listener para mensagens do script de conteúdo da extensão ---
     window.addEventListener('message', function(event) {
         // É crucial verificar a origem da mensagem e o tipo para evitar ataques XSS
         // Neste caso, como a mensagem vem do nosso próprio script de conteúdo,
@@ -755,7 +755,7 @@
                 MsgF(); // Esconde o loader
                 const decodedLink = atob(event.data.content);
                 console.log("Extensão enviou link (PDF):", decodedLink);
-                currentPdfLink = decodedLink; // Armazena o link PDF recebido da extensão
+                window.fsistResult = { linkPDF: decodedLink, linkXML: null }; // Armazena o link PDF
                 ele('resultadoConsulta').style.display = 'block'; // Mostra os botões
                 MsgInf('Link de PDF recebido da extensão. Você pode visualizar ou aguardar o XML.');
                 break;
@@ -763,20 +763,22 @@
                 MsgF(); // Esconde o loader
                 const decodedXml = atob(event.data.content);
                 console.log("Extensão enviou XML:", decodedXml);
-                currentXmlContent = decodedXml; // Armazena o XML recebido da extensão
+                currentXmlContent = decodedXml; // Armazena o XML recebido
+                // Se já tiver linkPDF, mantém. Se não, define.
+                window.fsistResult = { ...window.fsistResult, linkXML: `data:application/xml;base64,${event.data.content}` }; // Armazena o XML como data URL
                 ele('resultadoConsulta').style.display = 'block'; // Mostra os botões
                 MsgInf('XML recebido da extensão. Você pode baixar o XML ou visualizar o PDF (se disponível) ou gerar o DANFE.');
                 break;
-            case "FSIST_CERTIFICADO_ERROR": // Tratamento para erro de certificado
+            case "FSIST_CERTIFICADO_ERROR": // NOVO: Tratamento para erro de certificado
                 MsgF(); // Esconde o loader
                 // Decodifica corretamente a string Base64 UTF-8
                 const errorHtmlContent = decodeURIComponent(atob(event.data.content).split('').map(function(c) {
                     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                 }).join(''));
                 
-                console.error("Erro de Certificado (HTML da Extensão):", errorHtmlContent);
+                console.error("Erro de Certificado (HTML):", errorHtmlContent);
 
-                let userFriendlyMessage = "Erro desconhecido da extensão. Por favor, verifique o console para mais detalhes.";
+                let userFriendlyMessage = "Erro desconhecido. Por favor, verifique o console para mais detalhes.";
                 try {
                     // Tenta parsear o HTML e extrair a mensagem específica
                     const parser = new DOMParser();
@@ -791,11 +793,11 @@
                         }
                     }
                 } catch (e) {
-                    console.error("Erro ao parsear HTML de erro da extensão:", e);
+                    console.error("Erro ao parsear HTML de erro:", e);
                     userFriendlyMessage = "Falha ao processar a mensagem de erro do certificado. Por favor, verifique o console.";
                 }
                 
-                MsgInf(`Erro da extensão: ${userFriendlyMessage}. Por favor, verifique se o seu certificado digital está instalado e configurado corretamente.`);
+                MsgInf(`Erro: ${userFriendlyMessage}. Por favor, verifique se o seu certificado digital está instalado e configurado corretamente.`);
                 ele('resultadoConsulta').style.display = 'none'; // Esconde os botões de resultado
                 break;
         }
